@@ -4,7 +4,7 @@
 include "connection.php";
 
 
-if (isset($_POST['cyberB'])) {
+if (isset($_POST['cyberB']) && csrf_valid()) {
     $dbCustRecords = mysqli_query($con, "UPDATE cart SET cyberpunk= NULL where id='" . $_SESSION["id"] . "'");
     $dbCustRecords = mysqli_query($con, "UPDATE library SET cyberpunk='1' where id='" . $_SESSION["id"] . "'");
 }
@@ -51,7 +51,7 @@ if (isset($_POST['cyberB'])) {
             </div>
 
             <div class="col-md-2">
-                <form method="post">
+                <form method="post"><?php echo csrf_field(); ?>
                         <button class="btn btn-primary" id="cyberB" type="submit" name="cyberB"">Buy</button>
                 </form>
             </div>

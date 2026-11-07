@@ -11,13 +11,43 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
 // Include config file
 include "connection.php";
 include "header2.php";
+require_once "csrf.php";
 
 // Define variables and initialize with empty values
 $new_password = $confirm_password = "";
-$new_password_err = $confirm_password_err = "";
+$current_password_err = $new_password_err = $confirm_password_err = "";
 
 // Processing form data when form is submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
+    // Reject forms that were not submitted from this page
+    if (!csrf_valid()) {
+        $current_password_err = "Your session expired. Please try again.";
+    } elseif (empty(trim($_POST["current_password"]))) {
+        $current_password_err = "Please enter your current password.";
+    } else {
+        // Check the current password; refuse the change unless it verifies
+        $current_ok = false;
+        $sql = "SELECT password FROM users WHERE id = ?";
+
+        if ($stmt = mysqli_prepare($con, $sql)) {
+            mysqli_stmt_bind_param($stmt, "i", $param_id);
+            $param_id = $_SESSION["id"];
+
+            if (mysqli_stmt_execute($stmt)) {
+                mysqli_stmt_bind_result($stmt, $hashed_password);
+                // Passwords are trimmed at sign-up and login, so trim here too
+                if (mysqli_stmt_fetch($stmt) && password_verify(trim($_POST["current_password"]), $hashed_password)) {
+                    $current_ok = true;
+                }
+            }
+            mysqli_stmt_close($stmt);
+        }
+
+        if (!$current_ok) {
+            $current_password_err = "The current password you entered is not correct.";
+        }
+    }
 
     // Validate new password
     if (empty(trim($_POST["new_password"]))) {
@@ -39,7 +69,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     // Check input errors before updating the database
-    if (empty($new_password_err) && empty($confirm_password_err)) {
+    if (empty($current_password_err) && empty($new_password_err) && empty($confirm_password_err)) {
         // Prepare an update statement
         $sql = "UPDATE users SET password = ? WHERE id = ?";
 
@@ -96,9 +126,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <h2>Reset Password</h2>
         <p>Please fill out this form to reset your password.</p>
         <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
+            <?php echo csrf_field(); ?>
+            <div class="form-group <?php echo (!empty($current_password_err)) ? 'has-error' : ''; ?>">
+                <label>Current Password</label>
+                <input type="password" name="current_password" class="form-control">
+                <span class="help-block"><?php echo $current_password_err; ?></span>
+            </div>
             <div class="form-group <?php echo (!empty($new_password_err)) ? 'has-error' : ''; ?>">
                 <label>New Password</label>
-                <input type="password" name="new_password" class="form-control" value="<?php echo $new_password; ?>">
+                <input type="password" name="new_password" class="form-control">
                 <span class="help-block"><?php echo $new_password_err; ?></span>
             </div>
             <div class="form-group <?php echo (!empty($confirm_password_err)) ? 'has-error' : ''; ?>">

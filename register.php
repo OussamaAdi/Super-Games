@@ -12,6 +12,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Validate username
     if (empty(trim($_POST["username"]))) {
         $username_err = "Please enter a username.";
+    } elseif (!preg_match('/^[A-Za-z0-9_]{3,20}$/', trim($_POST["username"]))) {
+        $username_err = "Username must be 3-20 characters: letters, numbers and underscores only.";
     } else {
         // Prepare a select statement
         $sql = "SELECT id FROM users WHERE username = ?";
@@ -126,17 +128,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
                 <div class="form-group <?php echo (!empty($username_err)) ? 'has-error' : ''; ?>">
                     <label>Username</label>
-                    <input type="text" name="username" class="form-control" value="<?php echo $username; ?>">
+                    <input type="text" name="username" class="form-control" value="<?php echo htmlspecialchars($username, ENT_QUOTES, 'UTF-8'); ?>">
                     <span class="help-block"><?php echo $username_err; ?></span>
                 </div>
                 <div class="form-group <?php echo (!empty($password_err)) ? 'has-error' : ''; ?>">
                     <label>Password</label>
-                    <input type="password" name="password" class="form-control" value="<?php echo $password; ?>">
+                    <input type="password" name="password" class="form-control">
                     <span class="help-block"><?php echo $password_err; ?></span>
                 </div>
                 <div class="form-group <?php echo (!empty($confirm_password_err)) ? 'has-error' : ''; ?>">
                     <label>Confirm Password</label>
-                    <input type="password" name="confirm_password" class="form-control" value="<?php echo $confirm_password; ?>">
+                    <input type="password" name="confirm_password" class="form-control">
                     <span class="help-block"><?php echo $confirm_password_err; ?></span>
                 </div>
                 <div class="form-group">

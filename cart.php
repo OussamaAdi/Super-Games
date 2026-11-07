@@ -10,6 +10,7 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
 
 include "header2.php";
 include "connection.php";
+require_once "csrf.php";
 ?>
 
 

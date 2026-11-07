@@ -25,7 +25,7 @@
         <li id="li"><a class="btnn active2" href="about.php">About</a></li>
         <li id="li"><a class="btnn active3" href="contact.php">Contact</a></li>
         <li id="li" style="float:right"><a class="btnn" href="logout.php"><span id="log" class="fa fa-sign-out"></span>Logout</a></li>
-        <li id="name" style="float:right"><?php echo $_SESSION["username"]; ?></li>
+        <li id="name" style="float:right"><?php echo htmlspecialchars($_SESSION["username"], ENT_QUOTES, 'UTF-8'); ?></li>
         <li id="li" style="float:right"><a class="btnn active4" href="cart.php">Cart</a></li>
         <li id="li" style="float:right"><a class="btnn active5" href="library.php">Library</a></li>
     </ul><br><br><br><br>

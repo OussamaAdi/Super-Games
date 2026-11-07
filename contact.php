@@ -41,7 +41,7 @@ include "header2.php";
 
     <br><br><br>
     <div align = "center" class="container">
-        <h1 style="color: rgb(0, 124, 248);"><span><?php echo $_SESSION["username"]; ?></span>, You can contact us via Email</h1>
+        <h1 style="color: rgb(0, 124, 248);"><span><?php echo htmlspecialchars($_SESSION["username"], ENT_QUOTES, 'UTF-8'); ?></span>, You can contact us via Email</h1>
         <h2 style="color: rgb(0, 124, 248);">We’re here to help!</h2><br>
         <h2 style="color: rgb(0, 124, 248);">supergames@gmail.com</h2>
     </div><br><br><br><br><br>

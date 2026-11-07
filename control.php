@@ -11,12 +11,13 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
 include "header2.php";
 
 include "connection.php";
+require_once "csrf.php";
 
 $dbCustRecordss = mysqli_query($con, "SELECT COUNT(control) c FROM library WHERE id = '" . $_SESSION["id"] . "';");
 $row = mysqli_fetch_assoc($dbCustRecordss);
 $C = $row['c'];
 
-if (isset($_POST['cartB'])) {
+if (isset($_POST['cartB']) && csrf_valid()) {
     if ($C == 1) {
     }
     if ($C == 0) {
@@ -24,7 +25,7 @@ if (isset($_POST['cartB'])) {
     }
 }
 
-if (isset($_POST['buyB'])) {
+if (isset($_POST['buyB']) && csrf_valid()) {
     $dbCustRecords = mysqli_query($con, "UPDATE cart SET control= NULL where id='" . $_SESSION["id"] . "'");
     $dbCustRecords = mysqli_query($con, "UPDATE library SET control='1' where id='" . $_SESSION["id"] . "'");
 }
@@ -153,11 +154,11 @@ if (isset($_POST['buyB'])) {
         </div>
         <div id="buttons" class="col-md-1"><br><br>
             <div class="row-md-1">
-                <form method="post">
+                <form method="post"><?php echo csrf_field(); ?>
                     <button id="buy" type="submit" name="buyB">Buy</button>
                 </form>
                 <br>
-                <form method="post">
+                <form method="post"><?php echo csrf_field(); ?>
                     <button type="submit" name="cartB" data-toggle="tooltip" data-placement="top" title="Add to Cart" id="wish"><i class="fa fa-shopping-cart" style="font-size:20px;padding: 0px 0px 0px 0px;max-width: 30px;margin: 0px 0px 0px 0px;"></i></button>
                 </form>
             </div>
