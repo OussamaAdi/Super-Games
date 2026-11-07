@@ -2,15 +2,14 @@
 // Initialize the session
 session_start();
 
-// Check if the user is already logged in, if yes then redirect him to welcome page
-if (isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true) {
+require_once "connection.php";
+require_once "auth.php";
+
+// Already logged in: go to the home page
+if (is_logged_in()) {
     header("location: index.php");
     exit;
 }
-
-include "connection.php";
-include "header.php";
-global $con;
 
 // Define variables and initialize with empty values
 $username = $password = "";
@@ -26,92 +25,57 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $username = trim($_POST["username"]);
     }
 
-    // Check if password is empty
-    if (empty(trim($_POST["password"]))) {
+    // Check if password is empty (passwords are used exactly as typed, not trimmed)
+    $password = isset($_POST["password"]) ? (string) $_POST["password"] : "";
+    if ($password === "") {
         $password_err = "Please enter your password.";
-    } else {
-        $password = trim($_POST["password"]);
     }
 
     // Validate credentials
     if (empty($username_err) && empty($password_err)) {
-        // Prepare a select statement
-        $sql = "SELECT id, username, password FROM users WHERE username = ?";
 
-        if ($stmt = mysqli_prepare($con, $sql)) {
-            // Bind variables to the prepared statement as parameters
-            mysqli_stmt_bind_param($stmt, "s", $param_username);
+        if (login_is_throttled($con, $username)) {
+            $password_err = "Too many failed attempts. Please wait " . LOGIN_WINDOW_MINUTES . " minutes and try again.";
+        } else {
+            $login_ok = false;
+            $sql = "SELECT id, username, password FROM users WHERE username = ?";
 
-            // Set parameters
-            $param_username = $username;
+            if ($stmt = mysqli_prepare($con, $sql)) {
+                mysqli_stmt_bind_param($stmt, "s", $username);
 
-            // Attempt to execute the prepared statement
-            if (mysqli_stmt_execute($stmt)) {
-                // Store result
-                mysqli_stmt_store_result($stmt);
-
-                // Check if username exists, if yes then verify password
-                if (mysqli_stmt_num_rows($stmt) == 1) {
-                    // Bind result variables
-                    mysqli_stmt_bind_result($stmt, $id, $username, $hashed_password);
-                    if (mysqli_stmt_fetch($stmt)) {
-                        if (password_verify($password, $hashed_password)) {
-                            // Password is correct, so start a new session
-                            session_start();
-
-                            // Store data in session variables
-                            $_SESSION["loggedin"] = true;
-                            $_SESSION["id"] = $id;
-                            $_SESSION["username"] = $username;
-
-                            $dbCustRecordss = mysqli_query($con, "SELECT COUNT(id) c FROM cart WHERE id = '" . $_SESSION["id"] . "';");
-                            $row = mysqli_fetch_assoc($dbCustRecordss);
-                            $C = $row['c'];
-
-                            if ($C > 0) {
-                            }
-
-                            if ($C == 0) {
-                                $dbCustRecords = mysqli_query($con, "INSERT INTO `cart` (`id`) VALUES ('" . $_SESSION["id"] . "');");
-                            }
-
-
-
-
-                            $dbCustRecordss = mysqli_query($con, "SELECT COUNT(id) c FROM library WHERE id = '" . $_SESSION["id"] . "';");
-                            $row = mysqli_fetch_assoc($dbCustRecordss);
-                            $C = $row['c'];
-
-                            if ($C > 0) {
-                            }
-
-                            if ($C == 0) {
-                                $dbCustRecords = mysqli_query($con, "INSERT INTO `library` (`id`) VALUES ('" . $_SESSION["id"] . "');");
-                            }
-
-                            // Redirect user to welcome page
-                            header("location: index.php");
-                        } else {
-                            // Display an error message if password is not valid
-                            $password_err = "The password you entered was not valid.";
-                        }
+                if (mysqli_stmt_execute($stmt)) {
+                    mysqli_stmt_bind_result($stmt, $id, $db_username, $hashed_password);
+                    if (mysqli_stmt_fetch($stmt) && password_matches($password, $hashed_password)) {
+                        $login_ok = true;
                     }
-                } else {
-                    // Display an error message if username doesn't exist
-                    $username_err = "No account found with that username.";
                 }
-            } else {
-                echo "Oops! Something went wrong. Please try again later.";
+                mysqli_stmt_close($stmt);
             }
 
-            // Close statement
-            mysqli_stmt_close($stmt);
+            if ($login_ok) {
+                login_clear_failures($con, $username);
+
+                // New session id on login, so an id set before login can't be reused
+                session_regenerate_id(true);
+                $_SESSION["loggedin"] = true;
+                $_SESSION["id"] = $id;
+                $_SESSION["username"] = $db_username;
+
+                // Accounts made before sign-up created these rows may still be missing them
+                ensure_user_rows($con, $id);
+
+                header("location: index.php");
+                exit;
+            }
+
+            login_record_failure($con, $username);
+            // Same message whether the username or the password was wrong
+            $password_err = "Invalid username or password.";
         }
     }
-
-    // Close connection
-    mysqli_close($con);
 }
+
+include "header.php";
 ?>
 
 <!DOCTYPE html>

@@ -2,13 +2,14 @@
 // Initialize the session
 session_start();
 
-// Check if the user is logged in, if not then redirect him to login page
-if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
-    header("location: login.php");
-    exit;
-}
+// Anyone can see the contact details; logged-in users get the logged-in header
+$logged_in = isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true;
 
-include "header2.php";
+if ($logged_in) {
+    include "header2.php";
+} else {
+    include "header.php";
+}
 ?>
 
 
@@ -41,7 +42,11 @@ include "header2.php";
 
     <br><br><br>
     <div align = "center" class="container">
+        <?php if ($logged_in) { ?>
         <h1 style="color: rgb(0, 124, 248);"><span><?php echo htmlspecialchars($_SESSION["username"], ENT_QUOTES, 'UTF-8'); ?></span>, You can contact us via Email</h1>
+        <?php } else { ?>
+        <h1 style="color: rgb(0, 124, 248);">You can contact us via Email</h1>
+        <?php } ?>
         <h2 style="color: rgb(0, 124, 248);">We’re here to help!</h2><br>
         <h2 style="color: rgb(0, 124, 248);">supergames@gmail.com</h2>
     </div><br><br><br><br><br>

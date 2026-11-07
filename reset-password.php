@@ -2,16 +2,15 @@
 // Initialize the session
 session_start();
 
+require_once "connection.php";
+require_once "csrf.php";
+require_once "auth.php";
+
 // Check if the user is logged in, if not then redirect to login page
-if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
+if (!is_logged_in()) {
     header("location: login.php");
     exit;
 }
-
-// Include config file
-include "connection.php";
-include "header2.php";
-require_once "csrf.php";
 
 // Define variables and initialize with empty values
 $new_password = $confirm_password = "";
@@ -20,10 +19,12 @@ $current_password_err = $new_password_err = $confirm_password_err = "";
 // Processing form data when form is submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
+    $current_password = isset($_POST["current_password"]) ? (string) $_POST["current_password"] : "";
+
     // Reject forms that were not submitted from this page
     if (!csrf_valid()) {
         $current_password_err = "Your session expired. Please try again.";
-    } elseif (empty(trim($_POST["current_password"]))) {
+    } elseif ($current_password === "") {
         $current_password_err = "Please enter your current password.";
     } else {
         // Check the current password; refuse the change unless it verifies
@@ -36,8 +37,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             if (mysqli_stmt_execute($stmt)) {
                 mysqli_stmt_bind_result($stmt, $hashed_password);
-                // Passwords are trimmed at sign-up and login, so trim here too
-                if (mysqli_stmt_fetch($stmt) && password_verify(trim($_POST["current_password"]), $hashed_password)) {
+                if (mysqli_stmt_fetch($stmt) && password_matches($current_password, $hashed_password)) {
                     $current_ok = true;
                 }
             }
@@ -49,23 +49,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
 
-    // Validate new password
-    if (empty(trim($_POST["new_password"]))) {
+    // Validate new password (used exactly as typed, not trimmed)
+    $new_password = isset($_POST["new_password"]) ? (string) $_POST["new_password"] : "";
+    if (trim($new_password) === "") {
+        $new_password = "";
         $new_password_err = "Please enter the new password.";
-    } elseif (strlen(trim($_POST["new_password"])) < 6) {
-        $new_password_err = "Password must have atleast 6 characters.";
-    } else {
-        $new_password = trim($_POST["new_password"]);
+    } elseif (strlen($new_password) < PASSWORD_MIN_LENGTH) {
+        $new_password_err = "Password must have at least " . PASSWORD_MIN_LENGTH . " characters.";
     }
 
     // Validate confirm password
-    if (empty(trim($_POST["confirm_password"]))) {
+    $confirm_password = isset($_POST["confirm_password"]) ? (string) $_POST["confirm_password"] : "";
+    if ($confirm_password === "") {
         $confirm_password_err = "Please confirm the password.";
-    } else {
-        $confirm_password = trim($_POST["confirm_password"]);
-        if (empty($new_password_err) && ($new_password != $confirm_password)) {
-            $confirm_password_err = "Password did not match.";
-        }
+    } elseif (empty($new_password_err) && ($new_password !== $confirm_password)) {
+        $confirm_password_err = "Password did not match.";
     }
 
     // Check input errors before updating the database
@@ -95,10 +93,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             mysqli_stmt_close($stmt);
         }
     }
-
-    // Close connection
-    mysqli_close($con);
 }
+
+include "header2.php";
 ?>
 
 <!DOCTYPE html>

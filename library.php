@@ -2,14 +2,40 @@
 // Initialize the session
 session_start();
 
+require_once "connection.php";
+require_once "auth.php";
+require_once "store.php";
+
 // Check if the user is logged in, if not then redirect him to login page
-if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
+if (!is_logged_in()) {
     header("location: login.php");
     exit;
 }
 
+// Library items in display order: game column => item template
+$library_items = [
+    "reddead"      => "library/libraryRed.php",
+    "cyberpunk"    => "library/libraryCyber.php",
+    "gta"          => "library/libraryGta.php",
+    "borderlands"  => "library/libraryBorder.php",
+    "witcher"      => "library/libraryWitcher.php",
+    "zombie"       => "library/libraryZombie.php",
+    "maneater"     => "library/libraryManeater.php",
+    "odyssey"      => "library/libraryOdyssey.php",
+    "anno"         => "library/libraryAnno.php",
+    "starwarsB"    => "library/libraryStarwarsB.php",
+    "starwarsJ"    => "library/libraryStarwarsJ.php",
+    "doom"         => "library/libraryDoom.php",
+    "ghost"        => "library/libraryGhost.php",
+    "control"      => "library/libraryControl.php",
+    "satisfactory" => "library/librarySatisfactory.php",
+    "tetris"       => "library/libraryTetris.php",
+    "snowrunner"   => "library/librarySnowrunner.php",
+];
+
+$library = store_row($con, "library", $_SESSION["id"]);
+
 include "header2.php";
-include "connection.php";
 ?>
 
 
@@ -44,190 +70,11 @@ include "connection.php";
 
 
     <?php
-    $dbCustRecordss = mysqli_query($con, "SELECT COUNT(reddead) c FROM library WHERE id = '" . $_SESSION["id"] . "';");
-    $row = mysqli_fetch_assoc($dbCustRecordss);
-    $C = $row['c'];
-
-    if ($C == 0) {
-    }
-    if ($C == 1) {
-        include "library/libraryRed.php";
-    }
-    ?>
-    <?php
-    $dbCustRecordss = mysqli_query($con, "SELECT COUNT(cyberpunk) c FROM library WHERE id = '" . $_SESSION["id"] . "';");
-    $row = mysqli_fetch_assoc($dbCustRecordss);
-    $C = $row['c'];
-
-    if ($C == 0) {
-    }
-    if ($C == 1) {
-        include "library/libraryCyber.php";
-    }
-    ?>
-    <?php
-    $dbCustRecordss = mysqli_query($con, "SELECT COUNT(gta) c FROM library WHERE id = '" . $_SESSION["id"] . "';");
-    $row = mysqli_fetch_assoc($dbCustRecordss);
-    $C = $row['c'];
-
-    if ($C == 0) {
-    }
-    if ($C == 1) {
-        include "library/libraryGta.php";
-    }
-    ?>
-    <?php
-    $dbCustRecordss = mysqli_query($con, "SELECT COUNT(borderlands) c FROM library WHERE id = '" . $_SESSION["id"] . "';");
-    $row = mysqli_fetch_assoc($dbCustRecordss);
-    $C = $row['c'];
-
-    if ($C == 0) {
-    }
-    if ($C == 1) {
-        include "library/libraryBorder.php";
-    }
-    ?>
-    <?php
-    $dbCustRecordss = mysqli_query($con, "SELECT COUNT(witcher) c FROM library WHERE id = '" . $_SESSION["id"] . "';");
-    $row = mysqli_fetch_assoc($dbCustRecordss);
-    $C = $row['c'];
-
-    if ($C == 0) {
-    }
-    if ($C == 1) {
-        include "library/libraryWitcher.php";
-    }
-    ?>
-    <?php
-    $dbCustRecordss = mysqli_query($con, "SELECT COUNT(zombie) c FROM library WHERE id = '" . $_SESSION["id"] . "';");
-    $row = mysqli_fetch_assoc($dbCustRecordss);
-    $C = $row['c'];
-
-    if ($C == 0) {
-    }
-    if ($C == 1) {
-        include "library/libraryZombie.php";
-    }
-    ?>
-    <?php
-    $dbCustRecordss = mysqli_query($con, "SELECT COUNT(maneater) c FROM library WHERE id = '" . $_SESSION["id"] . "';");
-    $row = mysqli_fetch_assoc($dbCustRecordss);
-    $C = $row['c'];
-
-    if ($C == 0) {
-    }
-    if ($C == 1) {
-        include "library/libraryManeater.php";
-    }
-    ?>
-    <?php
-    $dbCustRecordss = mysqli_query($con, "SELECT COUNT(odyssey) c FROM library WHERE id = '" . $_SESSION["id"] . "';");
-    $row = mysqli_fetch_assoc($dbCustRecordss);
-    $C = $row['c'];
-
-    if ($C == 0) {
-    }
-    if ($C == 1) {
-        include "library/libraryOdyssey.php";
-    }
-    ?>
-    <?php
-    $dbCustRecordss = mysqli_query($con, "SELECT COUNT(anno) c FROM library WHERE id = '" . $_SESSION["id"] . "';");
-    $row = mysqli_fetch_assoc($dbCustRecordss);
-    $C = $row['c'];
-
-    if ($C == 0) {
-    }
-    if ($C == 1) {
-        include "library/libraryAnno.php";
-    }
-    ?>
-    <?php
-    $dbCustRecordss = mysqli_query($con, "SELECT COUNT(starwarsB) c FROM library WHERE id = '" . $_SESSION["id"] . "';");
-    $row = mysqli_fetch_assoc($dbCustRecordss);
-    $C = $row['c'];
-
-    if ($C == 0) {
-    }
-    if ($C == 1) {
-        include "library/libraryStarwarsB.php";
-    }
-    ?>
-    <?php
-    $dbCustRecordss = mysqli_query($con, "SELECT COUNT(starwarsJ) c FROM library WHERE id = '" . $_SESSION["id"] . "';");
-    $row = mysqli_fetch_assoc($dbCustRecordss);
-    $C = $row['c'];
-
-    if ($C == 0) {
-    }
-    if ($C == 1) {
-        include "library/libraryStarwarsJ.php";
-    }
-    ?>
-    <?php
-    $dbCustRecordss = mysqli_query($con, "SELECT COUNT(doom) c FROM library WHERE id = '" . $_SESSION["id"] . "';");
-    $row = mysqli_fetch_assoc($dbCustRecordss);
-    $C = $row['c'];
-
-    if ($C == 0) {
-    }
-    if ($C == 1) {
-        include "library/libraryDoom.php";
-    }
-    ?>
-    <?php
-    $dbCustRecordss = mysqli_query($con, "SELECT COUNT(ghost) c FROM library WHERE id = '" . $_SESSION["id"] . "';");
-    $row = mysqli_fetch_assoc($dbCustRecordss);
-    $C = $row['c'];
-
-    if ($C == 0) {
-    }
-    if ($C == 1) {
-        include "library/libraryGhost.php";
-    }
-    ?>
-    <?php
-    $dbCustRecordss = mysqli_query($con, "SELECT COUNT(control) c FROM library WHERE id = '" . $_SESSION["id"] . "';");
-    $row = mysqli_fetch_assoc($dbCustRecordss);
-    $C = $row['c'];
-
-    if ($C == 0) {
-    }
-    if ($C == 1) {
-        include "library/libraryControl.php";
-    }
-    ?>
-    <?php
-    $dbCustRecordss = mysqli_query($con, "SELECT COUNT(satisfactory) c FROM library WHERE id = '" . $_SESSION["id"] . "';");
-    $row = mysqli_fetch_assoc($dbCustRecordss);
-    $C = $row['c'];
-
-    if ($C == 0) {
-    }
-    if ($C == 1) {
-        include "library/librarySatisfactory.php";
-    }
-    ?>
-    <?php
-    $dbCustRecordss = mysqli_query($con, "SELECT COUNT(tetris) c FROM library WHERE id = '" . $_SESSION["id"] . "';");
-    $row = mysqli_fetch_assoc($dbCustRecordss);
-    $C = $row['c'];
-
-    if ($C == 0) {
-    }
-    if ($C == 1) {
-        include "library/libraryTetris.php";
-    }
-    ?>
-    <?php
-    $dbCustRecordss = mysqli_query($con, "SELECT COUNT(snowrunner) c FROM library WHERE id = '" . $_SESSION["id"] . "';");
-    $row = mysqli_fetch_assoc($dbCustRecordss);
-    $C = $row['c'];
-
-    if ($C == 0) {
-    }
-    if ($C == 1) {
-        include "library/librarySnowrunner.php";
+    // Show each game the user owns
+    foreach ($library_items as $game => $file) {
+        if (!empty($library[$game])) {
+            include $file;
+        }
     }
     ?>
 

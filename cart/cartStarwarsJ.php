@@ -1,20 +1,3 @@
-<?php
-// Initialize the session
-
-include "connection.php";
-
-
-if (isset($_POST['starwarsJB']) && csrf_valid()) {
-    $dbCustRecords = mysqli_query($con, "UPDATE cart SET starwarsJ= NULL where id='" . $_SESSION["id"] . "'");
-    $dbCustRecords = mysqli_query($con, "UPDATE library SET starwarsJ='1' where id='" . $_SESSION["id"] . "'");
-}
-
-?>
-
-
-
-
-
 <!DOCTYPE html>
 <html lang="en">
 

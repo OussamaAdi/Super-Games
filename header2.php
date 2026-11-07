@@ -24,7 +24,8 @@
         <li id="li"><a class="btnn active1" href="news.php">News</a></li>
         <li id="li"><a class="btnn active2" href="about.php">About</a></li>
         <li id="li"><a class="btnn active3" href="contact.php">Contact</a></li>
-        <li id="li" style="float:right"><a class="btnn" href="logout.php"><span id="log" class="fa fa-sign-out"></span>Logout</a></li>
+        <?php require_once "csrf.php"; ?>
+        <li id="li" style="float:right"><form id="logoutForm" method="post" action="logout.php"><?php echo csrf_field(); ?><button id="logoutB" class="btnn" type="submit"><span id="log" class="fa fa-sign-out"></span>Logout</button></form></li>
         <li id="name" style="float:right"><?php echo htmlspecialchars($_SESSION["username"], ENT_QUOTES, 'UTF-8'); ?></li>
         <li id="li" style="float:right"><a class="btnn active4" href="cart.php">Cart</a></li>
         <li id="li" style="float:right"><a class="btnn active5" href="library.php">Library</a></li>
@@ -33,6 +34,26 @@
 </body>
 
 <style>
+    /* Logout is a form button (so it can carry the CSRF token); make it look like the other nav links */
+    #logoutForm {
+        margin: 0;
+    }
+    #logoutB {
+        display: block;
+        font: inherit;
+        color: rgb(214, 214, 214);
+        background: none;
+        cursor: pointer;
+        padding: 18px 19px;
+        border: none;
+        border-bottom: 4px solid rgb(42, 42, 42);
+        transition-duration: 0.4s;
+    }
+    #logoutB:hover {
+        color: white;
+        border-bottom: 4px solid rgb(0, 124, 248);
+        padding: 18px 24px 18px 24px;
+    }
     #reset {
         float: right;
         margin-top: -34px;

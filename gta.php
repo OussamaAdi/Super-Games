@@ -2,34 +2,47 @@
 // Initialize the session
 session_start();
 
-// Check if the user is logged in, if not then redirect him to login page
-if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
-    header("location: login.php");
+require_once "connection.php";
+require_once "csrf.php";
+require_once "auth.php";
+require_once "store.php";
+
+// Game column in the cart and library tables
+$game = "gta";
+
+// Guests can view the page; buying needs an account
+$logged_in = is_logged_in();
+$owned = $logged_in && user_has_game($con, "library", $game, $_SESSION["id"]);
+$in_cart = $logged_in && !$owned && user_has_game($con, "cart", $game, $_SESSION["id"]);
+
+// Buy / Add to Cart: handle the form before the page is drawn, then redirect
+// so a refresh doesn't resubmit it
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    if (!$logged_in) {
+        header("location: login.php");
+        exit;
+    }
+
+    $done = "";
+    if (!$owned && csrf_valid()) {
+        if (isset($_POST["cartB"])) {
+            add_to_cart($con, $game, $_SESSION["id"]);
+        }
+        if (isset($_POST["buyB"]) && buy_game($con, $game, $_SESSION["id"])) {
+            $done = "bought";
+        }
+    }
+    header("location: " . basename(__FILE__) . ($done ? "?done=" . $done : ""));
     exit;
 }
 
-include "header2.php";
+$notice = store_notice();
 
-include "connection.php";
-require_once "csrf.php";
-
-$dbCustRecordss = mysqli_query($con, "SELECT COUNT(gta) c FROM library WHERE id = '" . $_SESSION["id"] . "';");
-$row = mysqli_fetch_assoc($dbCustRecordss);
-$C = $row['c'];
-
-if (isset($_POST['cartB']) && csrf_valid()) {
-    if ($C == 1) {
-    }
-    if ($C == 0) {
-        $dbCustRecords = mysqli_query($con, "UPDATE cart SET gta='1' where id='" . $_SESSION["id"] . "'");
-    }
+if ($logged_in) {
+    include "header2.php";
+} else {
+    include "header.php";
 }
-
-if (isset($_POST['buyB']) && csrf_valid()) {
-    $dbCustRecords = mysqli_query($con, "UPDATE cart SET gta= NULL where id='" . $_SESSION["id"] . "'");
-    $dbCustRecords = mysqli_query($con, "UPDATE library SET gta='1' where id='" . $_SESSION["id"] . "'");
-}
-
 ?>
 
 
@@ -159,6 +172,7 @@ if (isset($_POST['buyB']) && csrf_valid()) {
         <div style="color: white;" class="col-md-8">
             <h3 id="price">$30</h3>
             <h3>GTA V</h3>
+            <?php if ($notice !== "") { ?><p id="notice" style="color: rgb(0, 124, 248);"><?php echo $notice; ?></p><?php } ?>
             <p id="paragraph">Play as a young street hustler, a retired bank robber or a terrifying psychopath</p>
             <p id="paragraph">You must pull off a series of dangerous heists to survive in a ruthless city</p>
             <p id="paragraph">Grand Theft Auto V for PC also includes Grand Theft Auto Online</p>
@@ -166,13 +180,23 @@ if (isset($_POST['buyB']) && csrf_valid()) {
         </div>
         <div id="buttons" class="col-md-1"><br><br>
             <div class="row-md-1">
+                <?php if (!$logged_in) { ?>
+                    <a id="buy" style="text-decoration: none; white-space: nowrap;" href="login.php">Log in</a>
+                <?php } elseif ($owned) { ?>
+                    <a id="buy" style="text-decoration: none; white-space: nowrap;" href="library.php">Owned</a>
+                <?php } else { ?>
                 <form method="post"><?php echo csrf_field(); ?>
                     <button id="buy" type="submit" name="buyB">Buy</button>
                 </form>
                 <br>
+                <?php if ($in_cart) { ?>
+                    <a id="wish" style="text-decoration: none; white-space: nowrap; padding: 16px 12px;" href="cart.php" title="This game is in your cart. Click to view your cart."><i class="fa fa-check" style="font-size:20px;padding: 0px;margin: 0px;"></i> In Cart</a>
+                <?php } else { ?>
                 <form method="post"><?php echo csrf_field(); ?>
                     <button type="submit" name="cartB" data-toggle="tooltip" data-placement="top" title="Add to Cart" id="wish"><i class="fa fa-shopping-cart" style="font-size:20px;padding: 0px 0px 0px 0px;max-width: 30px;margin: 0px 0px 0px 0px;"></i></button>
                 </form>
+                <?php } ?>
+                <?php } ?>
             </div>
         </div>
     </div><br>

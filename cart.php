@@ -2,15 +2,58 @@
 // Initialize the session
 session_start();
 
+require_once "connection.php";
+require_once "csrf.php";
+require_once "auth.php";
+require_once "store.php";
+
 // Check if the user is logged in, if not then redirect him to login page
-if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
+if (!is_logged_in()) {
     header("location: login.php");
     exit;
 }
 
+// Cart items in display order: game column => [Buy button name, item template]
+$cart_items = [
+    "reddead"      => ["redB", "cart/cartRed.php"],
+    "cyberpunk"    => ["cyberB", "cart/cartCyber.php"],
+    "gta"          => ["gtaB", "cart/cartGta.php"],
+    "borderlands"  => ["borderB", "cart/cartBorder.php"],
+    "witcher"      => ["witcherB", "cart/cartWitcher.php"],
+    "zombie"       => ["zombieB", "cart/cartZombie.php"],
+    "maneater"     => ["manB", "cart/cartManeater.php"],
+    "odyssey"      => ["odysseyB", "cart/cartOdyssey.php"],
+    "anno"         => ["annoB", "cart/cartAnno.php"],
+    "starwarsB"    => ["starwarsBB", "cart/cartStarwarsB.php"],
+    "starwarsJ"    => ["starwarsJB", "cart/cartStarwarsJ.php"],
+    "doom"         => ["doomB", "cart/cartDoom.php"],
+    "ghost"        => ["ghostB", "cart/cartGhost.php"],
+    "control"      => ["controlB", "cart/cartControl.php"],
+    "satisfactory" => ["satisfactoryB", "cart/cartSatisfactory.php"],
+    "tetris"       => ["tetrisB", "cart/cartTetris.php"],
+    "snowrunner"   => ["snowrunnerB", "cart/cartSnowrunner.php"],
+];
+
+// Buy: handle it before the page is drawn, then redirect so the list is
+// up to date and a refresh doesn't resubmit the form
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $done = "";
+    if (csrf_valid()) {
+        $cart = store_row($con, "cart", $_SESSION["id"]);
+        foreach ($cart_items as $game => $item) {
+            if (isset($_POST[$item[0]]) && !empty($cart[$game]) && buy_game($con, $game, $_SESSION["id"])) {
+                $done = "bought";
+            }
+        }
+    }
+    header("location: cart.php" . ($done ? "?done=" . $done : ""));
+    exit;
+}
+
+$cart = store_row($con, "cart", $_SESSION["id"]);
+$notice = store_notice();
+
 include "header2.php";
-include "connection.php";
-require_once "csrf.php";
 ?>
 
 
@@ -44,191 +87,13 @@ require_once "csrf.php";
     <h3 align="center" style="color: white;">Bought games are in the Library</h3><br>
 
 
+    <?php if ($notice !== "") { ?><p align="center" style="color: rgb(0, 124, 248);"><?php echo $notice; ?></p><?php } ?>
     <?php
-    $dbCustRecordss = mysqli_query($con, "SELECT COUNT(reddead) c FROM cart WHERE id = '" . $_SESSION["id"] . "';");
-    $row = mysqli_fetch_assoc($dbCustRecordss);
-    $C = $row['c'];
-
-    if ($C == 0) {
-    }
-    if ($C == 1) {
-        include "cart/cartRed.php";
-    }
-    ?>
-    <?php
-    $dbCustRecordss = mysqli_query($con, "SELECT COUNT(cyberpunk) c FROM cart WHERE id = '" . $_SESSION["id"] . "';");
-    $row = mysqli_fetch_assoc($dbCustRecordss);
-    $C = $row['c'];
-
-    if ($C == 0) {
-    }
-    if ($C == 1) {
-        include "cart/cartCyber.php";
-    }
-    ?>
-    <?php
-    $dbCustRecordss = mysqli_query($con, "SELECT COUNT(gta) c FROM cart WHERE id = '" . $_SESSION["id"] . "';");
-    $row = mysqli_fetch_assoc($dbCustRecordss);
-    $C = $row['c'];
-
-    if ($C == 0) {
-    }
-    if ($C == 1) {
-        include "cart/cartGta.php";
-    }
-    ?>
-    <?php
-    $dbCustRecordss = mysqli_query($con, "SELECT COUNT(borderlands) c FROM cart WHERE id = '" . $_SESSION["id"] . "';");
-    $row = mysqli_fetch_assoc($dbCustRecordss);
-    $C = $row['c'];
-
-    if ($C == 0) {
-    }
-    if ($C == 1) {
-        include "cart/cartBorder.php";
-    }
-    ?>
-    <?php
-    $dbCustRecordss = mysqli_query($con, "SELECT COUNT(witcher) c FROM cart WHERE id = '" . $_SESSION["id"] . "';");
-    $row = mysqli_fetch_assoc($dbCustRecordss);
-    $C = $row['c'];
-
-    if ($C == 0) {
-    }
-    if ($C == 1) {
-        include "cart/cartWitcher.php";
-    }
-    ?>
-    <?php
-    $dbCustRecordss = mysqli_query($con, "SELECT COUNT(zombie) c FROM cart WHERE id = '" . $_SESSION["id"] . "';");
-    $row = mysqli_fetch_assoc($dbCustRecordss);
-    $C = $row['c'];
-
-    if ($C == 0) {
-    }
-    if ($C == 1) {
-        include "cart/cartZombie.php";
-    }
-    ?>
-    <?php
-    $dbCustRecordss = mysqli_query($con, "SELECT COUNT(maneater) c FROM cart WHERE id = '" . $_SESSION["id"] . "';");
-    $row = mysqli_fetch_assoc($dbCustRecordss);
-    $C = $row['c'];
-
-    if ($C == 0) {
-    }
-    if ($C == 1) {
-        include "cart/cartManeater.php";
-    }
-    ?>
-    <?php
-    $dbCustRecordss = mysqli_query($con, "SELECT COUNT(odyssey) c FROM cart WHERE id = '" . $_SESSION["id"] . "';");
-    $row = mysqli_fetch_assoc($dbCustRecordss);
-    $C = $row['c'];
-
-    if ($C == 0) {
-    }
-    if ($C == 1) {
-        include "cart/cartOdyssey.php";
-    }
-    ?>
-    <?php
-    $dbCustRecordss = mysqli_query($con, "SELECT COUNT(anno) c FROM cart WHERE id = '" . $_SESSION["id"] . "';");
-    $row = mysqli_fetch_assoc($dbCustRecordss);
-    $C = $row['c'];
-
-    if ($C == 0) {
-    }
-    if ($C == 1) {
-        include "cart/cartAnno.php";
-    }
-    ?>
-    <?php
-    $dbCustRecordss = mysqli_query($con, "SELECT COUNT(starwarsB) c FROM cart WHERE id = '" . $_SESSION["id"] . "';");
-    $row = mysqli_fetch_assoc($dbCustRecordss);
-    $C = $row['c'];
-
-    if ($C == 0) {
-    }
-    if ($C == 1) {
-        include "cart/cartStarwarsB.php";
-    }
-    ?>
-    <?php
-    $dbCustRecordss = mysqli_query($con, "SELECT COUNT(starwarsJ) c FROM cart WHERE id = '" . $_SESSION["id"] . "';");
-    $row = mysqli_fetch_assoc($dbCustRecordss);
-    $C = $row['c'];
-
-    if ($C == 0) {
-    }
-    if ($C == 1) {
-        include "cart/cartStarwarsJ.php";
-    }
-    ?>
-    <?php
-    $dbCustRecordss = mysqli_query($con, "SELECT COUNT(doom) c FROM cart WHERE id = '" . $_SESSION["id"] . "';");
-    $row = mysqli_fetch_assoc($dbCustRecordss);
-    $C = $row['c'];
-
-    if ($C == 0) {
-    }
-    if ($C == 1) {
-        include "cart/cartDoom.php";
-    }
-    ?>
-    <?php
-    $dbCustRecordss = mysqli_query($con, "SELECT COUNT(ghost) c FROM cart WHERE id = '" . $_SESSION["id"] . "';");
-    $row = mysqli_fetch_assoc($dbCustRecordss);
-    $C = $row['c'];
-
-    if ($C == 0) {
-    }
-    if ($C == 1) {
-        include "cart/cartGhost.php";
-    }
-    ?>
-    <?php
-    $dbCustRecordss = mysqli_query($con, "SELECT COUNT(control) c FROM cart WHERE id = '" . $_SESSION["id"] . "';");
-    $row = mysqli_fetch_assoc($dbCustRecordss);
-    $C = $row['c'];
-
-    if ($C == 0) {
-    }
-    if ($C == 1) {
-        include "cart/cartControl.php";
-    }
-    ?>
-    <?php
-    $dbCustRecordss = mysqli_query($con, "SELECT COUNT(satisfactory) c FROM cart WHERE id = '" . $_SESSION["id"] . "';");
-    $row = mysqli_fetch_assoc($dbCustRecordss);
-    $C = $row['c'];
-
-    if ($C == 0) {
-    }
-    if ($C == 1) {
-        include "cart/cartSatisfactory.php";
-    }
-    ?>
-    <?php
-    $dbCustRecordss = mysqli_query($con, "SELECT COUNT(tetris) c FROM cart WHERE id = '" . $_SESSION["id"] . "';");
-    $row = mysqli_fetch_assoc($dbCustRecordss);
-    $C = $row['c'];
-
-    if ($C == 0) {
-    }
-    if ($C == 1) {
-        include "cart/cartTetris.php";
-    }
-    ?>
-    <?php
-    $dbCustRecordss = mysqli_query($con, "SELECT COUNT(snowrunner) c FROM cart WHERE id = '" . $_SESSION["id"] . "';");
-    $row = mysqli_fetch_assoc($dbCustRecordss);
-    $C = $row['c'];
-
-    if ($C == 0) {
-    }
-    if ($C == 1) {
-        include "cart/cartSnowrunner.php";
+    // Show each game that is in the cart
+    foreach ($cart_items as $game => $item) {
+        if (!empty($cart[$game])) {
+            include $item[1];
+        }
     }
     ?>
 

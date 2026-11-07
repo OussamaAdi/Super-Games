@@ -27,7 +27,7 @@ var ghostInfo2 = "The Rise of the Ghost: In his quest to reclaim Tsushima, Jin m
 
 var gold1 = "rgb(209,190,125)";
 var gold2 = "rgb(175, 152, 108)";
-var white = "rgb(255,155,255)";
+var white = "rgb(255, 255, 255)";
 var blue = "rgb(34, 137, 255)";
 var blue1 = "rgb(20, 120, 255)";
 var orange = "rgb(211, 139, 31)";
@@ -51,7 +51,11 @@ function myFunction(imgs) {
     // Use the same src in the expanded image as the image being clicked on from the grid
     expandImg.src = imgs.src;
     // Use the value of the alt attribute of the clickable image as text inside the expanded image
-    imgText.innerHTML = imgs.alt;
+    // (only on pages that have an element with id="imgText")
+    var imgText = document.getElementById("imgText");
+    if (imgText) {
+        imgText.innerHTML = imgs.alt;
+    }
 }
 function changeText(title1, title2, title3, info1, info2, imgs, color1, color2, color3, link) {
     var titl1 = title1;
@@ -78,7 +82,11 @@ function changeText(title1, title2, title3, info1, info2, imgs, color1, color2, 
     // Use the same src in the expanded image as the image being clicked on from the grid
     expandImg.src = imgs.src;
     // Use the value of the alt attribute of the clickable image as text inside the expanded image
-    imgText.innerHTML = imgs.alt;
+    // (only on pages that have an element with id="imgText")
+    var imgText = document.getElementById("imgText");
+    if (imgText) {
+        imgText.innerHTML = imgs.alt;
+    }
 }
 function goBack() {
     window.history.back();
