@@ -1,267 +1,51 @@
 <?php
+require_once "includes/init.php";
 
-session_start();
+$points = [
+    ["A curated selection of games", "From exceptional AAAs, unique indies to the best of classic gaming. Every game is here because we chose it for you."],
+    ["Feeding your inner collector", "Offering games with as many goodies as possible is the Super Games way - even if it means exploring our long forgotten basements and attics."],
+    ["Respecting game creators", "When you're with us, you can be sure that all games are legitimate, and your purchases support rightful owners and creators."],
+];
 
-if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
-    include "header.php";
-}
-// Check if the user is logged in, if not then redirect him to login page
-if (isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true) {
-    include "header2.php";
-}
+// Partner logos, shown in two rows of five like the original page
+$partner_rows = [
+    ["cd-removebg-preview", "Pfizer", "sun", "Halflife", "JD"],
+    ["Wii", "NamcoBandai", "Figma", "Dragonair", "Xbox"],
+];
 
+$page_title = "About";
+$active_nav = "about";
+include "includes/header.php";
 ?>
-
-
-
-
-
-
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/bootstrap.min.css">
-    <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="style2.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <script src="jquery/jquery-3.3.1.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-    <script src="js/jquery-3.4.1.min.js"></script>
-    <script src="js/popper.min.js"></script>
-    <script src="js/all.min.js"></script>
-    <title>About</title>
-</head>
-
-<body>
-
-
-
-
-
-    <div id="c" align="center" class="container">
-        <h1 id="h1" style="color: rgb(0, 124, 248);">Hand-picking the best in gaming</h1>
-        <p id="p1">A selection of great DRM-free games, from modern hits to all-time classics, that you really shouldn't miss.</p>
-        <div id="rr" class="row">
-            <div id="cc" class="column">
-                <h4 style="color: rgb(0, 124, 248);">A curated selection of games</h4>
-                <p style="color: grey;">From exceptional AAAs, unique indies to the best of classic gaming. Every game is here because we chose it for you.</p>
+<div class="about-page">
+    <div class="container about-intro">
+        <h1 class="about-heading accent">Hand-picking the best in gaming</h1>
+        <p class="about-lead">A selection of great DRM-free games, from modern hits to all-time classics, that you really shouldn't miss.</p>
+        <div class="row about-points">
+            <?php foreach ($points as $point) { ?>
+            <div class="column about-point">
+                <h4 class="accent"><?php echo e($point[0]); ?></h4>
+                <p><?php echo e($point[1]); ?></p>
             </div>
-            <div id="cc" class="column">
-                <h4 style="color: rgb(0, 124, 248);">Feeding your inner collector</h4>
-                <p style="color: grey;">Offering games with as many goodies as possible is the Super Games way - even if it means exploring our long forgotten basements and attics.</p>
-            </div>
-            <div id="cc" class="column">
-                <h4 style="color: rgb(0, 124, 248);">Respecting game creators</h4>
-                <p style="color: grey;">When you're with us, you can be sure that all games are legitimate, and your purchases support rightful owners and creators.</p>
-            </div>
+            <?php } ?>
         </div>
     </div>
-
-
 
     <div class="container">
-        <hr id="hr">
+        <hr class="about-divider">
     </div>
 
-
-
-    <h1 id="h1">We Work with 100+ Partners Including:</h1>
+    <h1 class="about-heading">We Work with 100+ Partners Including:</h1>
     <div class="container">
+        <?php foreach ($partner_rows as $row) { ?>
         <div class="row">
+            <?php foreach ($row as $logo) { ?>
             <div class="column">
-                <img id="partner" style="max-width: 170px;" src="Photos/Logos/cd-removebg-preview.png" alt="">
+                <img class="partner-logo" src="Photos/Logos/<?php echo e($logo); ?>.png" alt="">
             </div>
-            <div class="column">
-                <img id="partner" style="max-width: 170px;" src="Photos/Logos/Pfizer.png" alt="">
-            </div>
-            <div class="column">
-                <img id="partner" style="max-width: 170px;" src="Photos/Logos/sun.png" alt="">
-            </div>
-            <div class="column">
-                <img id="partner" style="max-width: 170px;" src="Photos/Logos/Halflife.png" alt="">
-            </div>
-            <div class="column">
-                <img id="partner" style="max-width: 170px;" src="Photos/Logos/JD.png" alt="">
-            </div>
+            <?php } ?>
         </div>
-        <div class="row">
-            <div class="column">
-                <img id="partner" style="max-width: 170px;" src="Photos/Logos/Wii.png" alt="">
-            </div>
-            <div class="column">
-                <img id="partner" style="max-width: 170px;" src="Photos/Logos/NamcoBandai.png" alt="">
-            </div>
-            <div class="column">
-                <img id="partner" style="max-width: 170px;" src="Photos/Logos/Figma.png" alt="">
-            </div>
-            <div class="column">
-                <img id="partner" style="max-width: 170px;" src="Photos/Logos/Dragonair.png" alt="">
-            </div>
-            <div class="column">
-                <img id="partner" style="max-width: 170px;" src="Photos/Logos/Xbox.png" alt="">
-            </div>
-        </div>
+        <?php } ?>
     </div>
-
-
-
-
-
-
-
-
-
-
-
-
-    <div class="footer-dark">
-        <footer>
-            <div class="container">
-                <div class="row">
-                    <div class="col-sm-6 col-md-3 item">
-                        <h3>Services</h3>
-                        <ul>
-                            <li><a href="https://www.w3schools.com/" target="https://www.w3schools.com/">Web design</a></li>
-                            <li><a href="https://www.w3schools.com/" target="https://www.w3schools.com/">Development</a></li>
-                            <li><a href="https://www.w3schools.com/" target="https://www.w3schools.com/">Hosting</a></li>
-                        </ul>
-                    </div>
-                    <div class="col-sm-6 col-md-3 item">
-                        <h3>About</h3>
-                        <ul>
-                            <li><a href="Terms.html" target="Terms.html">Terms of service</a></li>
-                            <li><a href="Privacy.html" target="Privacy.html">Privacy Policy</a></li>
-                            <li><a href="RefundP.html" target="RefundP.html">Refund Policy</a></li>
-                        </ul>
-                    </div>
-                    <div class="col-md-6 item text">
-                        <h3>Super Games</h3>
-                        <p>© 2021, Super Games, Inc. All rights reserved. Super, Super Games, the Super Games logo, are trademarks or registered trademarks of Super Games, Inc. in the United States of America and elsewhere.</p>
-                    </div>
-                </div>
-                <div align="center">
-                    <a id="site" href="http://www.facebook.com" target="http://www.facebook.com" class="fa fa-facebook"></a>
-                    <a id="site" href="http://www.twitter.com" target="http://www.twitter.com" class="fa fa-twitter"></a>
-                    <a id="site" href="http://www.instagram.com" target="http://www.instagram.com" class="fa fa-instagram"></a>
-                    <a id="site" href="https://www.reddit.com/" target="https://www.reddit.com/" class="fa fa-reddit-alien"></a>
-                </div>
-
-                <p class="copyright">Super Games © 2021</p>
-
-            </div>
-        </footer>
-    </div>
-
-
-
-
-
-</body>
-
-<style>
-    #img {
-        height: 60px;
-        width: 70px;
-        margin-left: -17px;
-        margin-right: 17px;
-        margin-top: 3px;
-        padding: 0px;
-    }
-
-    #ul {
-        list-style-type: none;
-        margin: 0;
-        overflow: hidden;
-        background-color: rgb(42, 42, 42);
-        position: fixed;
-        top: 0;
-        width: 100%;
-        z-index: 99;
-        text-decoration: none;
-
-    }
-
-    #li {
-        float: left;
-        text-decoration: none;
-        padding: 0px;
-    }
-
-    #li a {
-        display: block;
-        color: rgb(214, 214, 214);
-        text-align: center;
-        padding: 18px 19px;
-        text-decoration: none;
-        border-top: none;
-        border-right: none;
-        border-left: none;
-        border-bottom: 4px solid rgb(42, 42, 42);
-        transition-duration: 0.4s;
-    }
-
-    #li a:hover {
-        border-top: none;
-        border-right: none;
-        border-left: none;
-        border-bottom: 4px solid rgb(0, 124, 248);
-        color: white;
-        padding: 18px 24px 18px 24px;
-    }
-
-    #li a.active2 {
-        border-top: none;
-        border-right: none;
-        border-left: none;
-        border-bottom: 4px solid rgb(0, 124, 248);
-        color: white;
-    }
-
-    #log {
-        margin: 0px;
-        padding: 0px;
-    }
-    #hr {
-        border-color: grey;
-        border-width: 2px;
-    }
-
-    #h1 {
-        text-align: center;
-        color: white;
-    }
-
-    #p1 {
-        color: grey;
-        font-size: 20px;
-    }
-
-    #cc {
-        max-width: 330px;
-        padding: 0px;
-        margin: 20px;
-
-    }
-
-    #rr {
-        margin-left: 35px;
-    }
-
-    #c {
-        max-width: 1350px;
-    }
-
-    .row {
-        margin-left: auto;
-        margin-right: auto;
-        width: 90%;
-        padding-left: 75px;
-    }
-</style>
-
-</html>
+</div>
+<?php include "includes/footer.php"; ?>

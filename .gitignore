@@ -1,2 +1,2 @@
-# Local database credentials (copy config.example.php to create it)
-config.php
+# Local database credentials (copy includes/config.example.php to create it)
+includes/config.php

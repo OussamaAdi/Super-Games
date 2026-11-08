@@ -6,9 +6,15 @@ A university project: a PHP and MySQL game store where users can sign up, log in
 
 1. Create an empty MySQL database (the default name is `Project`).
 2. Import `sql/schema.sql` into it. This creates all the tables, with no data.
-3. Copy `config.example.php` to `config.php` and fill in your database details. `config.php` is git-ignored.
+3. Import `sql/games.sql`. This adds the store's 17 games with their screenshots and reviews.
+4. Copy `includes/config.example.php` to `includes/config.php` and fill in your database details. `includes/config.php` is git-ignored.
 
-Already set up from an older version? Your database just needs the newer `login_attempts` table: run `sql/login_attempts.sql` instead of step 2.
+## Project layout
+
+- Pages: `index.php`, `all.php`, `game.php?slug=...` (one page for every game), `cart.php`, `library.php`, `news.php`, `about.php`, `contact.php` and the account pages.
+- `includes/`: shared code. `init.php` is loaded first by every page; `header.php` and `footer.php` wrap every page; `store.php` holds the cart and library logic. The folder can't be opened from the browser.
+- `style.css` and `script.js`: the one stylesheet and script for every page.
+- `sql/`: database structure and the games catalogue.
 
 ## Notes
 

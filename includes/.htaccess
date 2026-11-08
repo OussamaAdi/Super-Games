@@ -1,0 +1,2 @@
+# These files are only loaded by the pages; never serve them directly.
+Require all denied

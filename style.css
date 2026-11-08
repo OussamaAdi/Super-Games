@@ -1,196 +1,861 @@
+/* Super Games: the one stylesheet for every page.
+   --accent is the highlight colour. It is blue by default; game pages set it
+   to the game's own colour (see includes/header.php). */
+
+:root {
+    --accent: rgb(0, 124, 248);
+    --bg: rgb(20, 20, 20);
+    --panel: rgb(30, 30, 30);
+    --bar: rgb(42, 42, 42);
+    --text-muted: rgb(120, 120, 120);
+}
+
 body {
-    background-color: rgb(20, 20, 20);
+    background-color: var(--bg);
+    color: white;
+    padding-top: 64px;              /* room for the fixed navigation bar */
 }
 
-
-#C1 {
-    max-width: 1000px;
+/* The original pages started their content 96px from the top (32px under the bar) */
+.page {
+    padding: 32px 0 0;
 }
 
-#Titles {
+.accent {
+    color: var(--accent);
+}
+
+/* ---------- Navigation bar ---------- */
+
+.site-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 99;
+    display: flex;
+    justify-content: space-between;
+    padding-left: 40px;
+    background-color: var(--bar);
+    overflow-x: auto;
+    white-space: nowrap;
+}
+
+.nav-links {
+    display: flex;
+    align-items: stretch;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-links a,
+.nav-logout button {
+    display: block;
+    color: rgb(214, 214, 214);
+    padding: 18px 19px;
+    border: none;
+    border-bottom: 4px solid var(--bar);
+    background: none;
+    font: inherit;
+    cursor: pointer;
+    transition-duration: 0.4s;
+}
+
+.nav-links a:hover,
+.nav-logout button:hover {
+    color: white;
+    text-decoration: none;
+    border-bottom-color: var(--accent);
+    padding: 18px 24px;
+}
+
+.nav-links a.active {
+    color: white;
+    border-bottom-color: var(--accent);
+}
+
+.nav-links .fa {
+    width: 38px;
+    text-align: center;
+}
+
+.nav-logo a,
+.nav-logo a:hover {
+    padding: 0;
+    border: none;
+}
+
+.nav-logo img {
+    height: 60px;
+    width: 70px;
+    margin: 3px 17px 0 -17px;
+}
+
+.nav-user {
+    color: rgb(214, 214, 214);
+    font-size: 18px;
+    padding: 17px 19px;
+    cursor: default;
+}
+
+/* The home page and game pages show the username in their highlight colour */
+.user-accent .nav-user {
+    color: var(--accent);
+}
+
+.nav-logout {
+    margin: 0;
+}
+
+.reset-link {
+    position: absolute;
+    top: 62px;
+    right: 0;
+    padding: 6px 10px 4px;
+    font-size: 13px;
+    color: rgb(214, 214, 214);
+    background-color: var(--bar);
+    border-bottom: 2px solid var(--bar);
+    transition-duration: 0.3s;
+}
+
+.reset-link:hover {
+    color: white;
+    text-decoration: none;
+    border-bottom-color: var(--accent);
+}
+
+/* ---------- Footer ---------- */
+
+.footer-dark {
+    padding: 30px 0;
+    color: #ffffff;
+    background-color: var(--bar);
+}
+
+.footer-dark h3 {
+    margin-top: 0;
+    margin-bottom: 12px;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.footer-dark p {
+    margin-top: 0;
+    margin-bottom: 12px;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.footer-dark ul {
+    padding: 0;
+    list-style: none;
+    line-height: 1.6;
+    font-size: 14px;
+    margin-bottom: 0;
+}
+
+.footer-dark ul a {
+    color: inherit;
+    text-decoration: none;
+    opacity: 0.6;
+    transition-duration: 0.4s;
+}
+
+.footer-dark ul a:hover {
+    color: rgb(0, 124, 248);
+    opacity: 1;
+}
+
+.footer-dark .item.text {
+    margin-bottom: 36px;
+}
+
+.footer-dark .item.text p {
+    opacity: 0.6;
+    margin-bottom: 0;
+}
+
+@media (max-width: 767px) {
+    .footer-dark .item {
+        text-align: center;
+        padding-bottom: 20px;
+    }
+    .footer-dark .item.text {
+        margin-bottom: 0;
+    }
+}
+
+.footer-dark .social {
+    text-align: center;
+}
+
+.footer-dark .copyright {
+    text-align: center;
+    padding-top: 24px;
+    opacity: 0.3;
+    font-size: 13px;
+    margin-bottom: 0;
+}
+
+.social-link {
+    width: 38px;
+    padding: 10px;
+    margin: 5px;
+    border-radius: 50%;
+    font-size: 18px;
+    text-align: center;
+    color: white;
+    background: rgb(29, 29, 29);
+    transition-duration: 0.4s;
+}
+
+.social-link:hover {
+    color: white;
+    text-decoration: none;
+}
+
+.social-link.fa-facebook:hover { background-color: rgb(66, 103, 178); }
+.social-link.fa-twitter:hover { background-color: rgb(29, 161, 242); }
+.social-link.fa-instagram:hover { background-color: rgb(188, 42, 141); }
+.social-link.fa-reddit-alien:hover { background-color: rgb(255, 69, 0); }
+
+/* ---------- Buttons ---------- */
+
+/* Big dark buttons: Buy, cart, Download... Hover uses the accent colour. */
+.btn-store {
+    display: inline-block;
+    padding: 16px 32px;
+    font-size: 18px;
+    text-align: center;
+    white-space: nowrap;
+    color: white;
+    background-color: var(--panel);
+    border: 2px solid var(--bg);
+    border-radius: 5px;
+    cursor: pointer;
+    transition-duration: 0.3s;
+}
+
+.btn-store:hover,
+.btn-store:focus {
+    color: var(--accent);
+    text-decoration: none;
+    background-color: var(--bg);
+    border-color: var(--accent);
+}
+
+/* Demo-only buttons (Download (demo)) look dimmed but still react like the others */
+.btn-store:disabled {
+    opacity: 0.65;
+}
+
+/* Smaller outlined buttons used on the account forms */
+.btn-outline {
+    color: grey;
+    background-color: var(--bg);
+    border: 2px solid grey;
+    transition-duration: 0.3s;
+}
+
+.btn-outline:hover {
+    color: white;
+    text-decoration: none;
+    border-color: rgb(0, 124, 248);
+}
+
+/* ---------- Game cards (home page, All Games) ---------- */
+
+.section-title {
     color: rgb(207, 207, 207);
+    text-align: center;
+    margin: 72px 0 32px;
 }
 
-.portfolio-item {
+/* A section title at the very top of a page (All Games) */
+.section-title.page-top-title {
+    margin-top: 0;
+}
+
+.game-card {
     margin-bottom: 30px;
 }
 
-.h-100 {
-    background-color: rgb(20, 20, 20);
+.game-card .card {
+    height: 100%;
+    background-color: var(--bg);
 }
 
-#title1 {
-  color: rgb(209,190,125);
-}
-
-#title2 {
-  color: rgb(175, 152, 108);
-}
-
-#title3 {
-  color: rgb(175, 152, 108);
-}
-
-#gText {
+.game-card-title {
     color: rgb(220, 220, 220);
-    text-decoration: none;
     font-size: 18px;
 }
 
-#gText:hover {
-    color: rgb(255, 255, 255);
+.game-card-title:hover {
+    color: white;
+    text-decoration: none;
 }
 
+.game-card-developer {
+    color: var(--text-muted);
+    font-size: 15px;
+}
 
+.game-card-price {
+    color: rgb(220, 220, 220);
+}
 
-.footer-dark {
-    padding:30px 0;
-    color:#ffffff;
-    background-color:rgb(42, 42, 42);
-  }
-  
-  .footer-dark h3 {
-    margin-top:0;
-    margin-bottom:12px;
-    font-weight:bold;
-    font-size:16px;
-  }
+.game-card-price del {
+    color: var(--text-muted);
+    margin-right: 8px;
+}
 
-  .footer-dark p {
-    margin-top:0;
-    margin-bottom:12px;
-    font-weight:bold;
-    font-size:14px;
-  }
-  
-  .footer-dark ul {
-    padding:0;
-    list-style:none;
-    line-height:1.6;
-    font-size:14px;
-    margin-bottom:0;
-  }
-  
-  .footer-dark ul a {
-    color:inherit;
-    text-decoration:none;
-    opacity:0.6;
+/* ---------- Home page ---------- */
+
+/* Same width as the original home page carousel */
+.store-top {
+    max-width: 1000px;
+}
+
+.store-header {
+    position: relative;
+}
+
+.store-header h4 {
+    margin: 0 0 24px;
+}
+
+.view-all {
+    position: absolute;
+    right: 0;
+    top: -7px;
+    font-size: 20px;
+    color: grey;
+    padding: 5px 10px;
+    border-bottom: 2px solid grey;
+    transition-duration: 0.3s;
+}
+
+.view-all:hover {
+    color: white;
+    text-decoration: none;
+    border-color: rgb(0, 124, 248);
+}
+
+/* Spotlight panel: same size and positions as the original on wide screens,
+   with the thumbnails as a row above the image on smaller ones. */
+.spotlight {
+    position: relative;
+    max-width: 1519px;
+    margin: 0 auto;
+    padding-top: 25px;
+    background-color: var(--panel);
+    border-radius: 15px;
+}
+
+.spotlight-thumbs {
+    display: flex;
+    padding: 0 15px 10px;
+}
+
+.spotlight-thumb {
+    display: block;
+    width: 100%;
+    max-width: 180px;
+    padding: 6px 0;
+    margin-right: 10px;
+    border: none;
+    background: none;
+    opacity: 0.7;
+    cursor: pointer;
+}
+
+.spotlight-thumb img {
+    width: 100%;
+    border-radius: 13px;
+}
+
+.spotlight-thumb:hover {
+    opacity: 1;
+}
+
+.spotlight-main {
+    margin: 0;
+}
+
+.spotlight .accent2 {
+    color: var(--accent2);
+}
+
+.spotlight-text p {
+    color: white;
+}
+
+/* Same gaps as the original's line breaks between the spotlight lines */
+#spotlight-text1 {
+    margin-top: 32px;
+}
+
+#spotlight-text2,
+#spotlight-headline {
+    margin-top: 40px;
+}
+
+@media (min-width: 1200px) {
+    .spotlight-thumbs {
+        position: absolute;
+        left: 65px;
+        top: 25px;
+        width: 180px;
+        display: block;
+        padding: 0;
+    }
+    .spotlight-thumb {
+        margin: 0 0 10px;
+    }
+    .spotlight-main {
+        margin-left: 300px;
+        max-width: 1200px;
+    }
+}
+
+/* ---------- Game page ---------- */
+
+/* Same layout and positions as the original game pages */
+
+.game-top {
+    max-width: 1000px;
+}
+
+.game-top > .row {
+    max-width: 900px;
+}
+
+@media screen and (min-width: 800px) {
+    .game-top {
+        margin-left: 72px;
+        max-width: 770px;
+    }
+}
+
+@media screen and (min-width: 1400px) {
+    .game-top {
+        margin-left: 92px;
+        max-width: 850px;
+    }
+}
+
+.game-breadcrumb {
+    margin-left: -16px;
+}
+
+.game-breadcrumb .breadcrumb {
+    background-color: var(--bg);
+}
+
+.crumb-link,
+.crumb-link:not([href]):not([tabindex]) {
+    color: white;
+    text-decoration: none;
     transition-duration: 0.4s;
-  }
-  
-  .footer-dark ul a:hover {
-    color: rgb(0, 124, 248);
-    opacity:1;
-  }
-  
-  @media (max-width:767px) {
-    .footer-dark .item:not(.social) {
-      text-align:center;
-      padding-bottom:20px;
-    }
-  }
-  
-  .footer-dark .item.text {
-    margin-bottom:36px;
-  }
-  
-  @media (max-width:767px) {
-    .footer-dark .item.text {
-      margin-bottom:0;
-    }
-  }
-  
-  .footer-dark .item.text p {
-    opacity:0.6;
-    margin-bottom:0;
-  }
-  
-  .footer-dark .item.social {
-    text-align:center;
-  }
-  
-  @media (max-width:991px) {
-    .footer-dark .item.social {
-      text-align:center;
-      margin-top:20px;
-    }
-  }
-  
-  .footer-dark .item.social > a {
-    font-size:20px;
-    width:36px;
-    height:36px;
-    line-height:36px;
-    display:inline-block;
-    text-align:center;
-    border-radius:50%;
-    box-shadow:0 0 0 1px rgba(255,255,255,0.4);
-    margin:0 8px;
-    color:#fff;
-    opacity:0.75;
-  }
-  
-  .footer-dark .item.social > a:hover {
-    opacity:0.9;
-  }
-  
-  .footer-dark .copyright {
-    text-align:center;
-    padding-top:24px;
-    opacity:0.3;
-    font-size:13px;
-    margin-bottom:0;
-  }
+    cursor: pointer;
+}
 
-  .fa {
-    padding: 10px;
-    font-size: 40px;
-    width: 38px;
+.crumb-link:hover,
+.crumb-link:not([href]):not([tabindex]):hover {
+    color: var(--accent);
+    text-decoration: none;
+}
+
+/* SnowRunner's highlight colour is white, so its breadcrumb links start grey */
+.game-snowrunner .crumb-link {
+    color: grey;
+}
+
+.review-card {
+    width: 15rem;
+    background-color: var(--bar);
+}
+
+.review-card .card-title {
+    color: white;
+}
+
+.review-card .card-title.accent {
+    color: var(--accent);
+}
+
+.review-card .card-text {
+    color: grey;
+}
+
+.review-1 { margin-left: 780px; margin-top: -478px; }
+.review-2 { margin-left: 780px; margin-top: 17px; }
+.review-3 { margin-left: 1025px; margin-top: -479px; }
+.review-4 { margin-left: 1025px; margin-top: 16px; }
+
+@media screen and (min-width: 1400px) {
+    .review-1 { margin-left: 880px; }
+    .review-2 { margin-left: 880px; }
+    .review-3 { margin-left: 1150px; }
+    .review-4 { margin-left: 1150px; }
+}
+
+/* Satisfactory has a single card and its own position */
+.game-satisfactory .game-top {
+    margin-left: 92px;
+    max-width: 850px;
+}
+
+.game-satisfactory .review-1 {
+    margin-left: 880px;
+    margin-top: -478px;
+}
+
+.review-link {
+    color: var(--accent);
+    transition-duration: 0.3s;
+}
+
+.review-link:hover {
+    color: white;
+}
+
+.game-info {
+    margin-left: auto;
+    margin-right: auto;
+    width: 90%;
+    background-color: var(--bg);
+}
+
+.game-info p {
+    margin: 10px 0;
+}
+
+.game-price {
+    position: absolute;
+}
+
+@media screen and (min-width: 800px) {
+    .game-price { margin-left: 830px; }
+    .game-coming-soon .game-price { margin-left: 860px; }
+}
+
+@media screen and (min-width: 1400px) {
+    .game-price { margin-left: 930px; }
+    .game-coming-soon .game-price { margin-left: 955px; }
+}
+
+.game-buttons {
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.btn-buy,
+.btn-wish {
+    display: inline-block;
+    padding: 16px 32px;
     text-align: center;
-    text-decoration: none;
-    margin: 5px 5px;
-    border-radius: 50%;
+    color: white;
+    background-color: var(--panel);
+    border: 2px solid var(--bg);
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.btn-buy {
+    font-size: 18px;
     transition-duration: 0.4s;
-  }
-  
-  .fa-facebook {
-    background: rgb(29, 29, 29);
-    color: white;
 }
 
-.fa-facebook:hover {
-    background-color: rgb(66, 103, 178);
+.btn-wish {
+    position: absolute;
+    margin-top: -15px;
+    transition-duration: 0.2s;
 }
 
-.fa-twitter {
-    background: rgb(29, 29, 29);
-    color: white;
-}
-
-.fa-twitter:hover {
-    background-color: rgb(29, 161, 242);
-}
-
-.fa-instagram {
-    color: white;
-    background: rgb(29, 29, 29);
-}
-
-.fa-instagram:hover {
-    background-color: rgb(188, 42, 141);
-}
-.fa-reddit-alien {
-  color: white;
-  background: rgb(29, 29, 29);
-}
-
-.fa-reddit-alien:hover {
-  background-color: rgb(255,69,0);
-}
-#site {
+.btn-buy:hover,
+.btn-wish:hover {
+    color: var(--accent);
     text-decoration: none;
+    background-color: var(--bg);
+    border-color: var(--accent);
+}
+
+a.btn-buy,
+a.btn-wish {
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.btn-wish .fa {
+    font-size: 20px;
+    width: 30px;
+    text-align: center;
+}
+
+.btn-in-cart {
+    padding: 16px 12px;
+}
+
+/* Pre-order games: the original pages used a wider cart button */
+.game-coming-soon .btn-wish {
+    padding: 16px 55px;
+}
+
+.game-coming-soon .btn-in-cart {
+    padding: 16px 12px;
+}
+
+.game-coming-soon .btn-buy {
+    white-space: nowrap;
+}
+
+.notice {
+    color: rgb(0, 124, 248);
+}
+
+/* ---------- Cart and library ---------- */
+
+/* Cart and library rows, laid out like the original pages */
+.store-row {
+    margin: 0;
+    padding: 0;
+}
+
+.store-row .btn-store {
+    margin-top: 10px;
+}
+
+hr.store-divider {
+    border-width: 3px;
+    border-color: var(--bar);
+}
+
+.store-row h3 a {
+    color: white;
+}
+
+.store-row h3 a:hover {
+    color: var(--accent);
+    text-decoration: none;
+}
+
+.empty-message {
+    color: grey;
+    text-align: center;
+    margin: 40px 0;
+}
+
+/* ---------- Account forms (login, sign up, reset password) ---------- */
+
+/* Same size and spacing as the original forms */
+.auth-form {
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 30px;
+    font-size: 20px;
+}
+
+.auth-login {
+    margin-top: 48px;
+}
+
+.auth-login h2 {
+    font-size: 20px;
+}
+
+.auth-signup {
+    margin-top: 24px;
+}
+
+.auth-signup h2 {
+    font-size: 27px;
+}
+
+.auth-reset {
+    margin-top: 48px;
+}
+
+/* ---------- Contact ---------- */
+
+.contact-page {
+    padding-top: 72px;
+}
+
+.contact-email {
+    margin-top: 32px;
+}
+
+.auth-form a {
+    text-decoration: none;
+}
+
+.auth-form a:hover {
+    color: white;
+}
+
+.form-error {
+    display: block;
+    font-size: 16px;
+    margin-top: 4px;
+}
+
+/* ---------- News ---------- */
+
+/* Same layout as the original News page */
+.news-box {
+    margin-left: auto;
+    margin-right: auto;
+    padding-top: 20px;
+    width: 90%;
+    background-color: var(--panel);
+    border-radius: 10px;
+}
+
+.news-box-second {
+    padding-top: 44px;
+}
+
+.news-title,
+.news-subtitle {
+    margin-left: 15px;
+    width: 90%;
+    color: white;
+    font-size: 20px;
+}
+
+.news-title {
+    margin-top: -60px;
+}
+
+.news-subtitle {
+    margin-top: -35px;
+}
+
+.news-image {
+    max-width: 660px;
+    margin: 0;
+}
+
+.news-card-title {
+    position: absolute;
+    margin: 0;
+    padding: 0;
+    color: rgb(220, 220, 220);
     font-size: 18px;
 }
-#site:hover {
+
+.news-card-title:hover {
     color: white;
+    text-decoration: none;
+}
+
+.news-text {
+    color: rgb(220, 220, 220);
+}
+
+hr.news-divider {
+    border-color: rgb(45, 45, 45);
+    border-width: 3px;
+    max-width: 1363px;
+}
+
+.news-extras {
+    max-width: 1525px;
+}
+
+.news-extra {
+    margin-left: auto;
+    margin-right: auto;
+    width: 90%;
+    background-color: var(--bg);
+}
+
+.news-extra p {
+    margin: 10px 0;
+}
+
+.news-extra-heading {
+    position: absolute;
+    margin-top: -45px;
+    margin-left: 15px;
+    color: white;
+}
+
+hr.news-extra-divider {
+    border-color: rgb(45, 45, 45);
+    border-width: 4px;
+    max-width: 1335px;
+}
+
+/* ---------- Terms, Privacy and Refund pages (no navigation bar) ---------- */
+
+body.policy-page {
+    padding: 24px 32px;
+}
+
+.policy-page h2,
+.policy-page h3 {
+    color: white;
+}
+
+.policy-page p,
+.policy-page ul {
+    color: gray;
+}
+
+/* ---------- About ---------- */
+
+/* Same layout as the original About page */
+.about-page .row {
+    margin-left: auto;
+    margin-right: auto;
+    width: 90%;
+    padding-left: 75px;
+}
+
+.about-intro {
+    max-width: 1350px;
+    text-align: center;
+}
+
+.about-heading {
+    text-align: center;
+    color: white;
+}
+
+.about-heading.accent {
+    color: var(--accent);
+}
+
+.about-lead {
+    color: grey;
+    font-size: 20px;
+}
+
+.about-page .about-points {
+    margin-left: 35px;
+}
+
+.about-point {
+    max-width: 330px;
+    padding: 0;
+    margin: 20px;
+}
+
+.about-point p {
+    color: grey;
+}
+
+.about-divider {
+    border-color: grey;
+    border-width: 2px;
+}
+
+.partner-logo {
+    max-width: 170px;
 }
