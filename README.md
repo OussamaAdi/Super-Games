@@ -1,6 +1,7 @@
 # Super Games
 
 A university project: a PHP and MySQL game store where users can sign up, log in, add games to a cart and move them to a library.
+Built in 2021 for university; restructured and security-hardened in 2026 (v1.0 → v2.0)
 
 ## Screenshots
 
