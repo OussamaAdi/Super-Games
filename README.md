@@ -2,6 +2,28 @@
 
 A university project: a PHP and MySQL game store where users can sign up, log in, add games to a cart and move them to a library.
 
+## Screenshots
+
+**Home page**
+
+![Home page with the featured games carousel](screenshots/image%20%2810%29.png)
+
+**Game page**
+
+![DOOM Eternal game page with screenshots and press reviews](screenshots/image%20%2811%29.png)
+
+**News**
+
+![News page showing new content for store games](screenshots/image%20%2812%29.png)
+
+**Cart**
+
+![Cart with three games ready to buy](screenshots/image%20%2813%29.png)
+
+**Library**
+
+![Library with owned games and their download buttons](screenshots/image%20%2814%29.png)
+
 ## Setup
 
 1. Create an empty MySQL database (the default name is `Project`).
